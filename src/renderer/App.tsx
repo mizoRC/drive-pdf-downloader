@@ -1,12 +1,20 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  MemoryRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from 'react-router-dom';
 import React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
+import { GoogleLogin } from 'react-google-login';
 import './App.css';
 import appIcon from '../../assets/icon.png';
+import Preview from './Preview';
 
-const Hello = () => {
+const MainMenu = () => {
+  const navigate = useNavigate();
   const defaultURL =
     'https://drive.google.com/file/d/1Rq4OKbpfYi7AE6MAKu4afyebsapds5fQ/view';
   const [url, setUrl] = React.useState(defaultURL);
@@ -16,7 +24,12 @@ const Hello = () => {
   };
 
   const generatePDF = () => {
-    console.debug('URL => ', url);
+    console.debug('[MAIN] URL => ', url);
+    navigate(`/preview?url=${url}`);
+  };
+
+  const responseGoogle = (response: any) => {
+    console.log(response);
   };
 
   return (
@@ -42,6 +55,13 @@ const Hello = () => {
 
       <div className="center">
         <h1>Drive PDF downloader</h1>
+        <GoogleLogin
+          clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+          buttonText="Login"
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
+          cookiePolicy="single_host_origin"
+        />
       </div>
 
       <div className="center">
@@ -75,7 +95,7 @@ const Hello = () => {
           color="secondary"
           onClick={generatePDF}
         >
-          Generar PDF
+          Vista previa
         </Button>
       </div>
     </Paper>
@@ -86,7 +106,8 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<MainMenu />} />
+        <Route path="/preview" element={<Preview />} />
       </Routes>
     </Router>
   );
